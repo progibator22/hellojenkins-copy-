@@ -144,7 +144,7 @@ pipeline {
 3. Нажмите кнопку **Add webhook**.
 4. В поле **Payload URL** введите адрес вашего Jenkins вебхука:
    ```
-   http://84.201.147.67:8080/github-webhook/
+   http://158.160.194.244:8080/github-webhook/
    ```
 5. В поле **Content type** выберите `application/json`.
 6. В разделе **Which events would you like to trigger this webhook?** выберите **Just the push event**.
