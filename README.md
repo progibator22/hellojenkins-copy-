@@ -60,7 +60,7 @@ Jenkins — это система потоковой сборки для авт�
 
 ## Среда выполнения
 
-- Адрес Jenkins-сервера: [http://84.201.147.67:8080/](http://84.201.147.67:8080/)
+- Адрес Jenkins-сервера: http://158.160.194.244:8080/
 - GitHub-репозиторий с исходным кодом: выгрузите код из ==ДАННОГО== репозитория в свой и укажите свой URL GitHub при настройке job, например, `https://github.com/yourusername/yourproject.git`
 ***
 
@@ -84,6 +84,10 @@ Jenkins — это система потоковой сборки для авт�
 
 ## Шаг 2. Структура Jenkinsfile и описание этапов
 
+!!! В Jenkinsfile заменяем defaultValue для PORT, defaultValue для Student !!!
+!!! Обязательно меняем все hello-student-container на hello-surname-container
+!!! Обязательно меняем все student-fio-app на student-surname-app !!! 
+
 ```groovy
 pipeline {
     agent any
@@ -94,6 +98,16 @@ pipeline {
     }
     
     stages {
+        stage('Удаляем старые контейнеры и образы') {
+            steps {
+                script {
+                    // Останавливаем и удаляем контейнер с нужным именем, если он есть
+                    sh "docker ps -a -q --filter name=hello-student-container | xargs -r docker rm -f"
+                    // Удаляем образ с нужным именем, если он есть
+                    sh "docker images -q student-fio-app | xargs -r docker rmi -f"
+                }
+            }
+        }
         stage('Выгружаем код из репозитория') {
             steps {
                 git 'https://github.com/xDeshka/hellojenkins.git'
@@ -118,7 +132,6 @@ pipeline {
         stage('Запускаем докер контейнер') {
             steps {
                 script {
-                    sh "docker rm -f student-fio-container || true"
                     sh "docker run -d --name hello-student-container -p ${params.PORT}:${params.PORT} -e STUDENT_NAME='${params.STUDENT_NAME}' -e PORT=${params.PORT} student-fio-app"
                 }
             }
